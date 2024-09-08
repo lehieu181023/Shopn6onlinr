@@ -11,15 +11,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class sanpham {
+    private int id_sanpham;
     private String tenSP;
     private int anhSP;
     private double giasp;
+    private String gioithieu;
     public sanpham(){}
     Chucnang cn = new Chucnang();
-    public sanpham(String tenSP, int anhSP, double giasp) {
+
+    public sanpham(int id_sanpham, String tenSP, int anhSP, double giasp, String gioithieu) {
+        this.id_sanpham = id_sanpham;
         this.tenSP = tenSP;
         this.anhSP = anhSP;
         this.giasp = giasp;
+        this.gioithieu = gioithieu;
+    }
+
+    public int getId_sanpham() {
+        return id_sanpham;
+    }
+
+    public void setId_sanpham(int id_sanpham) {
+        this.id_sanpham = id_sanpham;
+    }
+
+    public String getGioithieu() {
+        return gioithieu;
+    }
+
+    public void setGioithieu(String gioithieu) {
+        this.gioithieu = gioithieu;
     }
 
     public String getTenSP() {
@@ -51,7 +72,7 @@ public class sanpham {
         try {
             ResultSet rs = cn.getRS("SELECT * FROM shopn6.sanpham;");
             while (rs.next()){
-                sanphamList.add(new sanpham(rs.getString("tensp"),rs.getInt("anhsp"),rs.getDouble("giasp") ));
+                sanphamList.add(new sanpham());
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

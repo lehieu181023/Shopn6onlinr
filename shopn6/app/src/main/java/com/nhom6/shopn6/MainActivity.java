@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         ActionViewFlip();
         listsp = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            listsp.add(new sanpham("San pham "+i,R.drawable.shop_icon,20000));
+            listsp.add(new sanpham());
         }
         Log.d("halo",listsp.get(3).getTenSP());
         adapter = new adaptersanpham(listsp);
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     private void hienthi(){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
-            new sanpham().sua(new sanpham("kaka",R.drawable.shop_icon,200000));
+            new sanpham().sua(new sanpham());
             sanphamList = new sanpham().hienthi();
             runOnUiThread(() -> {
                 try {
@@ -180,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hienthi();
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
