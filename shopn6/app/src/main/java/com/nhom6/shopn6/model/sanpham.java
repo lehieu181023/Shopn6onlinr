@@ -13,13 +13,13 @@ import java.util.List;
 public class sanpham {
     private int id_sanpham;
     private String tenSP;
-    private int anhSP;
+    private String anhSP;
     private double giasp;
     private String gioithieu;
     public sanpham(){}
     Chucnang cn = new Chucnang();
 
-    public sanpham(int id_sanpham, String tenSP, int anhSP, double giasp, String gioithieu) {
+    public sanpham(int id_sanpham, String tenSP, String anhSP, double giasp, String gioithieu) {
         this.id_sanpham = id_sanpham;
         this.tenSP = tenSP;
         this.anhSP = anhSP;
@@ -51,11 +51,11 @@ public class sanpham {
         this.tenSP = tenSP;
     }
 
-    public int getAnhSP() {
+    public String  getAnhSP() {
         return anhSP;
     }
 
-    public void setAnhSP(int anhSP) {
+    public void setAnhSP(String anhSP) {
         this.anhSP = anhSP;
     }
 
@@ -72,7 +72,7 @@ public class sanpham {
         try {
             ResultSet rs = cn.getRS("SELECT * FROM shopn6.sanpham;");
             while (rs.next()){
-                sanphamList.add(new sanpham());
+                sanphamList.add(new sanpham(rs.getInt("id_sanpham"),rs.getString("tensp"),rs.getString("anhsp"),rs.getDouble("giasp"),rs.getString("gioi_thieu")));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -86,7 +86,7 @@ public class sanpham {
             String sql = "INSERT INTO `shopn6`.`sanpham`(`tensp`,`anhsp`,`giasp` ) VALUES (?,?,?)";
             PreparedStatement stmt = cn.getSTMT(sql);
             stmt.setString(1,sp.getTenSP());
-            stmt.setInt(2,sp.getAnhSP());
+            stmt.setString(2,sp.getAnhSP());
             stmt.setDouble(3,sp.getGiasp());
             int rowupdate = stmt.executeUpdate();
             Log.d("nhapsql","So dong cap nhap: "+rowupdate);
@@ -106,7 +106,7 @@ public class sanpham {
                     "WHERE `id_sanpham` = ?;";
             PreparedStatement stmt = cn.getSTMT(sql);
             stmt.setString(1,sp.getTenSP());
-            stmt.setInt(2,sp.getAnhSP());
+            stmt.setString(2,sp.getAnhSP());
             stmt.setDouble(3,sp.getGiasp());
             stmt.setInt(4,1);
             int rowupdate = stmt.executeUpdate();
@@ -127,7 +127,7 @@ public class sanpham {
                     "WHERE `id_sanpham` = ?;";
             PreparedStatement stmt = cn.getSTMT(sql);
             stmt.setString(1,sp.getTenSP());
-            stmt.setInt(2,sp.getAnhSP());
+            stmt.setString(2,sp.getAnhSP());
             stmt.setDouble(3,sp.getGiasp());
             stmt.setInt(4,1);
             int rowupdate = stmt.executeUpdate();

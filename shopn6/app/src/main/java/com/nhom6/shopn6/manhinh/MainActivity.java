@@ -1,8 +1,7 @@
-package com.nhom6.shopn6;
+package com.nhom6.shopn6.manhinh;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,27 +21,22 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+import com.nhom6.shopn6.R;
 import com.nhom6.shopn6.adapter.adaptersanpham;
-import com.nhom6.shopn6.database.Chucnang;
 import com.nhom6.shopn6.database.DBconnect;
 import com.nhom6.shopn6.model.sanpham;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
@@ -69,24 +63,31 @@ public class MainActivity extends AppCompatActivity {
         });
         Anhxa();
         Actionbar();
-        ActionViewFlip();
-        listsp = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            listsp.add(new sanpham());
-        }
-        Log.d("halo",listsp.get(3).getTenSP());
-        adapter = new adaptersanpham(listsp);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
+        db = new DBconnect();
         if(isConnect(this)){
-            Toast.makeText(this, "Đã kết nỗi internet", Toast.LENGTH_SHORT).show();
+            connect();
+            ActionViewFlip();
+            hienthisanpham();
         }else {
             Toast.makeText(this, "Mất kết nối internet", Toast.LENGTH_SHORT).show();
         }
-        db = new DBconnect();
-        connect();
+    }
+
+    private void hienthisanpham() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(() -> {
+            sanpham sp = new sanpham();
+            listsp = (ArrayList<sanpham>) sp.hienthi();
+            runOnUiThread(() -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                adapter = new adaptersanpham(listsp,getApplicationContext());
+                recyclerView.setAdapter(adapter);
+            });
+        });
 
     }
 
@@ -190,7 +191,13 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbartc);
         viewFlipper = findViewById(R.id.viewflippertc);
         recyclerView = findViewById(R.id.recyclerviewtc);
+        RecyclerView.LayoutManager layoutManager  = new GridLayoutManager(this,2);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
         navigationView = findViewById(R.id.navigationviewtc);
         listView = findViewById(R.id.listviewtc);
+
+        db = new DBconnect();
+        listsp = new ArrayList<>();
     }
 }

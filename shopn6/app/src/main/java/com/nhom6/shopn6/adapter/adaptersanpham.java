@@ -1,5 +1,6 @@
 package com.nhom6.shopn6.adapter;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.nhom6.shopn6.R;
 import com.nhom6.shopn6.model.sanpham;
 
@@ -19,9 +21,11 @@ import java.util.List;
 
 public class adaptersanpham extends RecyclerView.Adapter<adaptersanpham.ViewHolder> {
     private List<sanpham> listsp;
+    private Context context;
 
-    public adaptersanpham(List<sanpham> listsp) {
+    public adaptersanpham(List<sanpham> listsp, Context context) {
         this.listsp = listsp;
+        this.context = context;
     }
 
     @NonNull
@@ -34,9 +38,10 @@ public class adaptersanpham extends RecyclerView.Adapter<adaptersanpham.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.getAnhsp().setImageResource(listsp.get(position).getAnhSP());
+        Glide.with(context.getApplicationContext()).load(listsp.get(position).getAnhSP()).into(holder.getAnhsp());
+        holder.getAnhsp().setScaleType(ImageView.ScaleType.FIT_XY);
         holder.getTensp().setText(listsp.get(position).getTenSP());
-        holder.getGiasp().setText(listsp.get(position).getGiasp()+"");
+        holder.getGiasp().setText("Giá "+ listsp.get(position).getGiasp()+ " VND");
         Log.d("halo","position :"+position );
     }
 
@@ -49,28 +54,13 @@ public class adaptersanpham extends RecyclerView.Adapter<adaptersanpham.ViewHold
         private final ImageView anhsp;
         private final TextView tensp;
         private final TextView giasp;
-        private final Button buy;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             anhsp = itemView.findViewById(R.id.imageView);
             tensp = itemView.findViewById(R.id.textView);
             giasp = itemView.findViewById(R.id.textView2);
-            buy = itemView.findViewById(R.id.button);
 
-            buy.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(itemView.getContext(), "Đã mua sản phẩm: "+tensp.getText().toString(), Toast.LENGTH_SHORT).show();
-                    for (int i = 0; i < listsp.size(); i++) {
-                        if(listsp.get(i).getTenSP().equals(tensp.getText().toString())){
-                            listsp.remove(i);
-                            notifyDataSetChanged();
-                            break;
-                        }
-                    }
-                }
-            });
         }
 
         public ImageView getAnhsp() {
