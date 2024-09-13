@@ -28,8 +28,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.nhom6.shopn6.R;
+import com.nhom6.shopn6.adapter.adapterloaisp;
 import com.nhom6.shopn6.adapter.adaptersanpham;
 import com.nhom6.shopn6.database.DBconnect;
+import com.nhom6.shopn6.model.loai_sp;
 import com.nhom6.shopn6.model.sanpham;
 
 import java.sql.Connection;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     ArrayList<sanpham> listsp;
     adaptersanpham adapter;
+    adapterloaisp adapterloaisp;
     DBconnect db ;
     Connection conn;
     String str = null;
@@ -67,10 +70,34 @@ public class MainActivity extends AppCompatActivity {
         if(isConnect(this)){
             connect();
             ActionViewFlip();
+            hienthimenu();
             hienthisanpham();
+
         }else {
             Toast.makeText(this, "Mất kết nối internet", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void hienthimenu() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(() -> {
+            List<loai_sp> loaiSps;
+            try {
+                loai_sp loaiSp = new loai_sp();
+                loaiSps = loaiSp.hienthi();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            runOnUiThread(() -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                adapterloaisp = new adapterloaisp(loaiSps,getApplicationContext(),R.layout.item_menu);
+                listView.setAdapter(adapterloaisp);
+            });
+        });
     }
 
     private void hienthisanpham() {
@@ -117,28 +144,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void hienthi(){
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(() -> {
-            new sanpham().sua(new sanpham());
-            sanphamList = new sanpham().hienthi();
-            runOnUiThread(() -> {
-                try {
-                    Thread.sleep(1000);
-                }catch (InterruptedException i){
-                    i.printStackTrace();
-                }
-                if (sanphamList.size() != 0){
-                    Toast.makeText(MainActivity.this, sanphamList.get(0).getTenSP(), Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(MainActivity.this, "null", Toast.LENGTH_SHORT).show();
-
-                }
-
-            });
-        });
-    }
 
 
     private boolean isConnect(Context context) {
@@ -177,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
     private void Actionbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_launcher_foreground);
+        toolbar.setNavigationIcon(R.drawable.baseline_menu_24);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

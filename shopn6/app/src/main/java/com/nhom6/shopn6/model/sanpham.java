@@ -16,6 +16,7 @@ public class sanpham {
     private String anhSP;
     private double giasp;
     private String gioithieu;
+
     public sanpham(){}
     Chucnang cn = new Chucnang();
 

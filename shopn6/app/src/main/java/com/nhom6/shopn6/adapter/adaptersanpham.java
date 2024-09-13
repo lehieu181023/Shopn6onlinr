@@ -55,6 +55,8 @@ public class adaptersanpham extends RecyclerView.Adapter<adaptersanpham.ViewHold
         private final TextView tensp;
         private final TextView giasp;
 
+
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             anhsp = itemView.findViewById(R.id.imageView);
