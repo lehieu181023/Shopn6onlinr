@@ -12,15 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.nhom6.shopn6.R;
-import com.nhom6.shopn6.model.SanPhamMoi;
+import com.nhom6.shopn6.model.sanpham;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class DienthoaiAdapter extends RecyclerView.Adapter<DienthoaiAdapter.MyViewHolder> {
     Context context;
-    List<SanPhamMoi> array;
+    List<sanpham> array;
 
-    public DienthoaiAdapter(Context context, List<SanPhamMoi> array) {
+    public DienthoaiAdapter(Context context, List<sanpham> array) {
         this.context = context;
         this.array = array;
     }
@@ -34,12 +35,13 @@ public class DienthoaiAdapter extends RecyclerView.Adapter<DienthoaiAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        SanPhamMoi sanPham = array.get(position);
-        Glide.with(context.getApplicationContext()).load(sanPham.getHinhanh()).into(holder.hinhanh);
+        sanpham sanPham = array.get(position);
+        Glide.with(context.getApplicationContext()).load(sanPham.getAnhSP()).into(holder.hinhanh);
         holder.hinhanh.setScaleType(ImageView.ScaleType.FIT_XY);
-        holder.tensp.setText(sanPham.getTensp());
-        holder.giasp.setText(sanPham.getGiasp());
-        holder.mota.setText(sanPham.getMota());
+        holder.tensp.setText(sanPham.getTenSP());
+        DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
+        holder.giasp.setText("Giá " + decimalFormat.format(sanPham.getGiasp()) +" VND");
+        holder.mota.setText(sanPham.getGioithieu().replace("•","\n•"));
 
     }
 

@@ -1,6 +1,8 @@
 package com.nhom6.shopn6.manhinh;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -8,8 +10,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -27,10 +31,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+import com.nex3z.notificationbadge.NotificationBadge;
 import com.nhom6.shopn6.R;
 import com.nhom6.shopn6.adapter.adapterloaisp;
 import com.nhom6.shopn6.adapter.adaptersanpham;
 import com.nhom6.shopn6.database.DBconnect;
+import com.nhom6.shopn6.model.GioHang;
 import com.nhom6.shopn6.model.loai_sp;
 import com.nhom6.shopn6.model.sanpham;
 
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     Toolbar toolbar;
     ViewFlipper viewFlipper;
+    ImageView btngiohang;
     RecyclerView recyclerView;
     NavigationView navigationView;
     ListView listView;
@@ -54,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
     Connection conn;
     String str = null;
     List<sanpham> sanphamList;
+    List<loai_sp> loaiSps;
+    Intent intent;
+    NotificationBadge badge;
+    GioHang gh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,19 +83,85 @@ public class MainActivity extends AppCompatActivity {
             ActionViewFlip();
             hienthimenu();
             hienthisanpham();
+            Actionmenu();
+            hienthigiohang();
+            ActionGiohang();
 
         }else {
             Toast.makeText(this, "Mất kết nối internet", Toast.LENGTH_SHORT).show();
         }
     }
+    private void ActionGiohang() {
+        btngiohang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),GioHangActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void hienthigiohang() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(() -> {
+            gh = new GioHang();
+            int sl = gh.so_luong();
+            runOnUiThread(() -> {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                badge.setText(""+sl);
+            });
+        });
+    }
+
+    private void Actionmenu() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (loaiSps.get(i).getLoai_sp()){
+                    case "Điện thoại":
+                        intent = new Intent(MainActivity.this,San_pham_Activity.class);
+                        intent.putExtra("loaisp","Điện thoại");
+                        startActivity(intent);
+                        break;
+                    case "Laptop":
+                        intent = new Intent(MainActivity.this,San_pham_Activity.class);
+                        intent.putExtra("loaisp","Laptop");
+                        startActivity(intent);
+                        break;
+                    case "Đăng xuất":
+                        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.remove("user");  // Xóa dữ liệu theo khóa "user"
+                        editor.remove("email");
+                        editor.apply();
+                        intent = new Intent(MainActivity.this,DangNhapActivity.class);
+                        startActivity(intent);
+                        break;
+                    case "Quản lý":
+                        intent = new Intent(MainActivity.this,Activityquanly.class);
+                        startActivity(intent);
+                        break;
+                }
+            }
+        });
+    }
 
     private void hienthimenu() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
-            List<loai_sp> loaiSps;
+
             try {
                 loai_sp loaiSp = new loai_sp();
                 loaiSps = loaiSp.hienthi();
+                loaiSps.add(0,new loai_sp(101,"Trang chủ","https://icon-library.com/images/home-icon-images/home-icon-images-15.jpg"));
+                loaiSps.add(new loai_sp(102,"Thông tin","https://cdn-icons-png.flaticon.com/128/665/665049.png"));
+                loaiSps.add(new loai_sp(103,"Đăng xuất","https://cdn-icons-png.flaticon.com/128/1828/1828490.png"));
+                loaiSps.add(new loai_sp(104,"Hỗ trợ","https://cdn-icons-png.flaticon.com/128/4961/4961759.png"));
+                loaiSps.add(new loai_sp(105,"Quản lý","https://cdn-icons-png.flaticon.com/128/7656/7656409.png"));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -124,10 +201,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 conn = db.getconnect();
                 if(conn == null){
-                    str = "loi ket noi";
+                    str = "Lỗi kết server";
                 }
                 else {
-                    str = "ket noi thanh cong";
+                    str = "Kết nối thành công";
                 }
             }catch (Exception e){
                 throw new RuntimeException(e);
@@ -191,6 +268,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        hienthigiohang();
+    }
+
     private void Anhxa() {
         drawerLayout = findViewById(R.id.drawerlayouttc);
         toolbar = findViewById(R.id.toolbartc);
@@ -201,6 +284,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         navigationView = findViewById(R.id.navigationviewtc);
         listView = findViewById(R.id.listviewtc);
+        badge = findViewById(R.id.Giohang_slct);
+        btngiohang = findViewById(R.id.btngiohangct);
 
         db = new DBconnect();
         listsp = new ArrayList<>();

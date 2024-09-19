@@ -1,29 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <application
-        android:allowBackup="true"
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <application
+        android:name=".Application.MyApplication"
+        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Shopn6"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".manhinh.MainActivity"
-            android:exported="true">
+            android:name=".manhinh.ActivitySuaSp"
+            android:exported="false" />
+        <activity
+            android:name=".manhinh.Activityquanly"
+            android:exported="true" />
+        <activity
+            android:name=".manhinh.themspActivity"
+            android:exported="true" />
+        <activity
+            android:name=".manhinh.DangKyActivity"
+            android:exported="true" />
+        <activity
+            android:name=".manhinh.DangNhapActivity"
+            android:exported="true" />
+        <activity
+            android:name=".manhinh.ActivityFirstscreenload"
+            android:exported="true"
+            android:theme="@style/TransparentTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".manhinh.Activity_thanhtoan"
+            android:exported="false" />
+        <activity
+            android:name=".manhinh.GioHangActivity"
+            android:exported="false" />
+        <activity
+            android:name=".manhinh.MainActivity_chi_tiet"
+            android:exported="false" />
+        <activity
+            android:name=".manhinh.San_pham_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".manhinh.MainActivity"
+            android:exported="false"></activity>
     </application>
 
 </manifest>

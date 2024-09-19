@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:elevation="8dp"
+    app:cardCornerRadius="4dp"
+    android:layout_margin="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/item_giohang_image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/iconnew_w512"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="6">
+            <TextView
+                android:layout_weight="4"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:id="@+id/item_giohang_tensp"
+                android:text="Tên sản phẩm"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"/>
+            <RelativeLayout
+                android:layout_marginLeft="10dp"
+                android:layout_weight="2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:id="@+id/txtgiasp_gh"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textSize="17dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="200000 VND"
+                    android:textColor="#E73B3B" />
+                <ImageButton
+                    android:id="@+id/btncong"
+                    android:src="@drawable/icon_cong"
+                    android:layout_toLeftOf="@+id/txtsoluong_spgh"
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/txtsoluong_spgh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:textStyle="bold"
+                    android:text="20"
+                    android:gravity="center"
+                    android:textSize="13dp"
+                    android:layout_toLeftOf="@+id/btntru"/>
+                <ImageButton
+                    android:id="@+id/btntru"
+                    android:src="@drawable/icon_tru"
+                    android:layout_width="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
