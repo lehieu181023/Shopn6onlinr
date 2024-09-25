@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class DBconnect {
     protected final String db="shopn6";
-    protected final String ip = "192.168.191.81";
+    protected final String ip = "10.147.17.181";
     protected final String port = "3306";
     protected final String user = "nhom6";
     protected final String pass = "@Ab12345";

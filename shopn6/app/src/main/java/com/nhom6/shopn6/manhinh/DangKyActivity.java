@@ -8,11 +8,14 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.nhom6.shopn6.Interface.UI;
 import com.nhom6.shopn6.R;
 import com.nhom6.shopn6.model.User;
 
@@ -22,6 +25,8 @@ import java.util.concurrent.Executors;
 public class DangKyActivity extends AppCompatActivity {
     TextInputEditText intxtsdt,intxtemail,intxtpass,intxtpassag;
     AppCompatButton btndk;
+    LottieAnimationView lottieAnimationView;
+    ConstraintLayout constraintLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,9 +52,17 @@ public class DangKyActivity extends AppCompatActivity {
                 if (passag.equals(pass)){
                     ExecutorService executorService = Executors.newSingleThreadExecutor();
                     executorService.execute(() -> {
+                        runOnUiThread(() -> {
+                            UI.setUIEnabled(constraintLayout,false);
+                            lottieAnimationView.setVisibility(View.VISIBLE);
+                            lottieAnimationView.playAnimation();
+                        });
                         User user = new User(sdt,email,pass);
                         if (user.themUser() == 0){
                             runOnUiThread(() -> {
+                                lottieAnimationView.setVisibility(View.GONE);
+                                lottieAnimationView.cancelAnimation();
+                                UI.setUIEnabled(constraintLayout,true);
                                 Toast.makeText(DangKyActivity.this, "Đang ký thành công", Toast.LENGTH_SHORT).show();
                                 runOnUiThread(() -> {
                                     try {
@@ -63,10 +76,16 @@ public class DangKyActivity extends AppCompatActivity {
                             });
                         } else if (user.themUser() == 1) {
                             runOnUiThread(() -> {
+                                lottieAnimationView.setVisibility(View.GONE);
+                                lottieAnimationView.cancelAnimation();
+                                UI.setUIEnabled(constraintLayout,true);
                                 Toast.makeText(DangKyActivity.this, "tài khoản hoac Email đã tồn tại", Toast.LENGTH_SHORT).show();
                             });
                         } else {
                             runOnUiThread(() -> {
+                                lottieAnimationView.setVisibility(View.GONE);
+                                lottieAnimationView.cancelAnimation();
+                                UI.setUIEnabled(constraintLayout,true);
                                 Toast.makeText(DangKyActivity.this, "Lỗi,Hãy kiểm tra internet của bạn hoặc liên hệ lại với nhà phát triển", Toast.LENGTH_SHORT).show();
                             });
                         }
@@ -86,5 +105,7 @@ public class DangKyActivity extends AppCompatActivity {
         intxtsdt = findViewById(R.id.intxtsdtdk);
         intxtpassag = findViewById(R.id.intxtpassagdk);
         btndk = findViewById(R.id.btndangky);
+        lottieAnimationView =findViewById(R.id.lottie_layer_dangky);
+        constraintLayout = findViewById(R.id.main);
     }
 }

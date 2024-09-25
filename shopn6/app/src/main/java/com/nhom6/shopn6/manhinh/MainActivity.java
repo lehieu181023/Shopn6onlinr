@@ -1,5 +1,6 @@
 package com.nhom6.shopn6.manhinh;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -20,6 +22,7 @@ import android.widget.ViewFlipper;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
@@ -29,6 +32,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.nex3z.notificationbadge.NotificationBadge;
@@ -39,6 +43,7 @@ import com.nhom6.shopn6.database.DBconnect;
 import com.nhom6.shopn6.model.GioHang;
 import com.nhom6.shopn6.model.loai_sp;
 import com.nhom6.shopn6.model.sanpham;
+import com.nhom6.shopn6.Interface.UI;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -65,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
     Intent intent;
     NotificationBadge badge;
     GioHang gh;
+    LottieAnimationView lottieAnimationView;
+    ConstraintLayout constraintLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             ActionGiohang();
 
         }else {
-            Toast.makeText(this, "Mất kết nối internet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Not internet", Toast.LENGTH_SHORT).show();
         }
     }
     private void ActionGiohang() {
@@ -107,11 +114,6 @@ public class MainActivity extends AppCompatActivity {
             gh = new GioHang();
             int sl = gh.so_luong();
             runOnUiThread(() -> {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
                 badge.setText(""+sl);
             });
         });
@@ -153,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
     private void hienthimenu() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
-
             try {
                 loai_sp loaiSp = new loai_sp();
                 loaiSps = loaiSp.hienthi();
@@ -163,14 +164,9 @@ public class MainActivity extends AppCompatActivity {
                 loaiSps.add(new loai_sp(104,"Hỗ trợ","https://cdn-icons-png.flaticon.com/128/4961/4961759.png"));
                 loaiSps.add(new loai_sp(105,"Quản lý","https://cdn-icons-png.flaticon.com/128/7656/7656409.png"));
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                Log.e("ero_sql", "Lỗi SQL: ", e);
             }
             runOnUiThread(() -> {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
                 adapterloaisp = new adapterloaisp(loaiSps,getApplicationContext(),R.layout.item_menu);
                 listView.setAdapter(adapterloaisp);
             });
@@ -183,11 +179,6 @@ public class MainActivity extends AppCompatActivity {
             sanpham sp = new sanpham();
             listsp = (ArrayList<sanpham>) sp.hienthi();
             runOnUiThread(() -> {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
                 adapter = new adaptersanpham(listsp,getApplicationContext());
                 recyclerView.setAdapter(adapter);
             });
@@ -198,6 +189,11 @@ public class MainActivity extends AppCompatActivity {
     private void connect() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
+            runOnUiThread(() -> {
+                UI.setUIEnabled(constraintLayout,false);
+                lottieAnimationView.setVisibility(View.VISIBLE);
+                lottieAnimationView.playAnimation();
+            });
             try {
                 conn = db.getconnect();
                 if(conn == null){
@@ -207,14 +203,12 @@ public class MainActivity extends AppCompatActivity {
                     str = "Kết nối thành công";
                 }
             }catch (Exception e){
-                throw new RuntimeException(e);
+                Log.e("ero_sql", "Lỗi SQL: ", e);
             }
             runOnUiThread(() -> {
-                try {
-                    Thread.sleep(1000);
-                }catch (InterruptedException i){
-                    i.printStackTrace();
-                }
+                lottieAnimationView.setVisibility(View.GONE);
+                lottieAnimationView.cancelAnimation();
+                UI.setUIEnabled(constraintLayout,true);
                 Toast.makeText(MainActivity.this, str, Toast.LENGTH_SHORT).show();
             });
 
@@ -271,7 +265,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        hienthigiohang();
+        if (isConnect(getApplicationContext())){
+            hienthigiohang();
+        }
     }
 
     private void Anhxa() {
@@ -286,8 +282,11 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.listviewtc);
         badge = findViewById(R.id.Giohang_slct);
         btngiohang = findViewById(R.id.btngiohangct);
+        lottieAnimationView = findViewById(R.id.lottie_layer_main);
+        constraintLayout = findViewById(R.id.main);
 
         db = new DBconnect();
         listsp = new ArrayList<>();
     }
+
 }

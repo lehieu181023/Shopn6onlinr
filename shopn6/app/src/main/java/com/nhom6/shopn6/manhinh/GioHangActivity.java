@@ -9,12 +9,15 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.nhom6.shopn6.Interface.UI;
 import com.nhom6.shopn6.R;
 import com.nhom6.shopn6.adapter.GioHangAdapter;
 import com.nhom6.shopn6.model.GioHang;
@@ -32,6 +35,8 @@ public class GioHangActivity extends AppCompatActivity {
     GioHangAdapter adapter;
     List<GioHang> manggiohang;
     GioHang gh;
+    LottieAnimationView lottieAnimationView;
+    ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +72,19 @@ public class GioHangActivity extends AppCompatActivity {
     private void inData() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
+            runOnUiThread(() -> {
+                UI.setUIEnabled(constraintLayout,false);
+                lottieAnimationView.setVisibility(View.VISIBLE);
+                lottieAnimationView.playAnimation();
+            });
             gh = new GioHang();
             manggiohang = gh.hienthigh();
             runOnUiThread(() -> {
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                lottieAnimationView.setVisibility(View.GONE);
+                lottieAnimationView.cancelAnimation();
+                UI.setUIEnabled(constraintLayout,true);
                 if (manggiohang.size() != 0){
-                    adapter = new GioHangAdapter(getApplicationContext(),manggiohang,tongtien);
+                    adapter = new GioHangAdapter(getApplicationContext(),manggiohang,tongtien,lottieAnimationView,constraintLayout);
                     recyclerView.setAdapter(adapter);
                     tongtien.setText(adapter.tinhtien());
                 }
@@ -107,6 +115,8 @@ public class GioHangActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toobar);
         recyclerView = findViewById(R.id.recycleviewgiohang);
         btnmuahang = findViewById(R.id.btnmuahang);
+        lottieAnimationView = findViewById(R.id.lottie_layer_giohang);
+        constraintLayout = findViewById(R.id.main);
     }
 
 }

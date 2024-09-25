@@ -12,12 +12,15 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nex3z.notificationbadge.NotificationBadge;
+import com.nhom6.shopn6.Interface.UI;
 import com.nhom6.shopn6.R;
 import com.nhom6.shopn6.model.GioHang;
 
@@ -31,6 +34,8 @@ public class Activity_thanhtoan extends AppCompatActivity {
     TextView txtemail;
     AppCompatButton btnthanhtoan;
     Toolbar toolbar;
+    LottieAnimationView lottieAnimationView;
+    ConstraintLayout constraintLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,10 +69,18 @@ public class Activity_thanhtoan extends AppCompatActivity {
             public void onClick(View view) {
                 ExecutorService executorService = Executors.newSingleThreadExecutor();
                 executorService.execute(() -> {
+                    runOnUiThread(() -> {
+                        UI.setUIEnabled(constraintLayout,false);
+                        lottieAnimationView.setVisibility(View.VISIBLE);
+                        lottieAnimationView.playAnimation();
+                    });
                     GioHang gh = new GioHang();
                     Double sotien = Double.parseDouble(txtsotien.getText().toString().replaceAll("[^0-9]", ""));
                     gh.thanhtoan(sotien,textInputEditText.getText().toString());
                     runOnUiThread(() -> {
+                        lottieAnimationView.setVisibility(View.GONE);
+                        lottieAnimationView.cancelAnimation();
+                        UI.setUIEnabled(constraintLayout,true);
                         Toast.makeText(Activity_thanhtoan.this, "Thanh toán thành công", Toast.LENGTH_SHORT).show();
                         runOnUiThread(() -> {
                             try {
@@ -101,6 +114,8 @@ public class Activity_thanhtoan extends AppCompatActivity {
         txtuser = findViewById(R.id.dhuser);
         btnthanhtoan = findViewById(R.id.dhbtndh);
         toolbar = findViewById(R.id.toobardh);
+        lottieAnimationView = findViewById(R.id.lottie_layer_thanhtoan);
+        constraintLayout = findViewById(R.id.main);
 
     }
 }

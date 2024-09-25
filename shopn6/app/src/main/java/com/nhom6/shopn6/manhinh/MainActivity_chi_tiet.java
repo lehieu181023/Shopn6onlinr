@@ -15,12 +15,15 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.nex3z.notificationbadge.NotificationBadge;
+import com.nhom6.shopn6.Interface.UI;
 import com.nhom6.shopn6.R;
 import com.nhom6.shopn6.model.GioHang;
 import com.nhom6.shopn6.model.User;
@@ -43,6 +46,8 @@ public class MainActivity_chi_tiet extends AppCompatActivity {
     NotificationBadge badge;
     GioHang gh ;
     ImageView btngiohang;
+    LottieAnimationView lottieAnimationView;
+    ConstraintLayout constraintLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +83,11 @@ public class MainActivity_chi_tiet extends AppCompatActivity {
             public void onClick(View view) {
                 ExecutorService executorService = Executors.newSingleThreadExecutor();
                 executorService.execute(() -> {
+                    runOnUiThread(() -> {
+                        UI.setUIEnabled(constraintLayout,false);
+                        lottieAnimationView.setVisibility(View.VISIBLE);
+                        lottieAnimationView.playAnimation();
+                    });
                     String ssl = editTextslsp.getText().toString().trim();
                     if (ssl.isEmpty()){
                         gh = new GioHang(sanpham.getId_sanpham(),1);
@@ -89,11 +99,9 @@ public class MainActivity_chi_tiet extends AppCompatActivity {
                     gh.themspgh();
                     int tsl = gh.so_luong();
                     runOnUiThread(() -> {
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
+                        lottieAnimationView.setVisibility(View.GONE);
+                        lottieAnimationView.cancelAnimation();
+                        UI.setUIEnabled(constraintLayout,true);
                         badge.setText(""+tsl);
                         Toast.makeText(MainActivity_chi_tiet.this, "Thêm thành công vào giỏ hàng", Toast.LENGTH_SHORT).show();
                     });
@@ -147,6 +155,8 @@ public class MainActivity_chi_tiet extends AppCompatActivity {
         imageButtontsl = findViewById(R.id.btntangsl);
         badge = findViewById(R.id.Giohang_sl);
         btngiohang = findViewById(R.id.btngiohang);
+        lottieAnimationView = findViewById(R.id.lottie_layer_chitiet);
+        constraintLayout = findViewById(R.id.main);
     }
 
     private void initData() {

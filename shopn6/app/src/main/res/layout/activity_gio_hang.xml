@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GioHangActivity">
+    tools:context=".manhinh.GioHangActivity">
 
     <TextView
         app:layout_constraintTop_toTopOf="parent"
@@ -72,4 +72,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_layer_giohang"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="true"
+        android:visibility="gone"
+        app:lottie_rawRes="@raw/loadd" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,12 +15,15 @@ import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.nhom6.shopn6.Interface.ImageClickListenner;
 import com.nhom6.shopn6.Interface.ItemClickListener;
+import com.nhom6.shopn6.Interface.UI;
 import com.nhom6.shopn6.R;
 import com.nhom6.shopn6.manhinh.GioHangActivity;
 import com.nhom6.shopn6.manhinh.MainActivity_chi_tiet;
@@ -36,11 +39,15 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.MyViewHo
     Context context;
     List<GioHang> gioHanglist;
     TextView textView;
+    LottieAnimationView lottieAnimationView;
+    ConstraintLayout constraintLayout;
 
-    public GioHangAdapter(Context context, List<GioHang> gioHanglist, TextView textView) {
+    public GioHangAdapter(Context context, List<GioHang> gioHanglist, TextView textView, LottieAnimationView lottieAnimationView, ConstraintLayout constraintLayout) {
         this.context = context;
         this.gioHanglist = gioHanglist;
         this.textView = textView;
+        this.lottieAnimationView = lottieAnimationView;
+        this.constraintLayout = constraintLayout;
     }
 
     @NonNull
@@ -67,11 +74,22 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.MyViewHo
                     final int ssl = sl;
                     ExecutorService executorService = Executors.newSingleThreadExecutor();
                     executorService.execute(() -> {
+                        boolean handler1 = new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                UI.setUIEnabled(constraintLayout,false);
+                                lottieAnimationView.setVisibility(View.VISIBLE);
+                                lottieAnimationView.playAnimation();
+                            }
+                        });
                         gioHanglist.get(pos).setSoluong(ssl);
                         gioHanglist.get(pos).sua_so_luong();
                         boolean handler = new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
+                                lottieAnimationView.setVisibility(View.GONE);
+                                lottieAnimationView.cancelAnimation();
+                                UI.setUIEnabled(constraintLayout,true);
                                 holder.soluongsp.setText(""+ssl);
                                 textView.setText(tinhtien());
                             }
@@ -82,20 +100,48 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.MyViewHo
                     if (sl == 0){
                         ExecutorService executorService = Executors.newSingleThreadExecutor();
                         executorService.execute(() -> {
+                            boolean handler1 = new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    UI.setUIEnabled(constraintLayout,false);
+                                    lottieAnimationView.setVisibility(View.VISIBLE);
+                                    lottieAnimationView.playAnimation();
+                                }
+                            });
                             gioHanglist.get(pos).xoasp();
                             gioHanglist.remove(pos);
                             notifyItemRemoved(pos);
+                            boolean handler = new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    lottieAnimationView.setVisibility(View.GONE);
+                                    lottieAnimationView.cancelAnimation();
+                                    UI.setUIEnabled(constraintLayout,true);
+                                    textView.setText(tinhtien());
+                                }
+                            });
                         });
                     }
                     else {
                         final int ssl = sl;
                         ExecutorService executorService = Executors.newSingleThreadExecutor();
                         executorService.execute(() -> {
+                            boolean handler1 = new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    UI.setUIEnabled(constraintLayout,false);
+                                    lottieAnimationView.setVisibility(View.VISIBLE);
+                                    lottieAnimationView.playAnimation();
+                                }
+                            });
                             gioHanglist.get(pos).setSoluong(ssl);
                             gioHanglist.get(pos).sua_so_luong();
                             boolean handler = new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {
+                                    lottieAnimationView.setVisibility(View.GONE);
+                                    lottieAnimationView.cancelAnimation();
+                                    UI.setUIEnabled(constraintLayout,true);
                                     holder.soluongsp.setText(""+ssl);
                                     textView.setText(tinhtien());
                                 }
@@ -117,7 +163,7 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.MyViewHo
             return decimalFormat.format(tongtien) +" VND";
         }
         else {
-            return 0+ "VND";
+            return 0+ " VND";
         }
     }
     @Override
